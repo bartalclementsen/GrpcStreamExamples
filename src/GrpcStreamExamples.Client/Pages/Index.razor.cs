@@ -2,57 +2,43 @@
 using GrpcStreamExamples.Server.Contracts;
 using GrpcStreamExamples.Server.Contracts.Commands;
 using GrpcStreamExamples.Server.Contracts.Streaming;
+using Mediator;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System.Collections.ObjectModel;
 
 namespace GrpcStreamExamples.Client.Pages;
 
-public partial class Index
+public partial class Index //: INotificationHandler<SayHelloStreamResponse>
 {
     private string? _message;
 
     private ObservableCollection<string> _messages = new ObservableCollection<string>();
 
     [Inject] private IGreeterService _greeterService { get; set; } = default!;
+    [Inject] private IMediator _mediator { get; set; } = default!;
+
+    public Guid Guid = Guid.NewGuid();
 
     protected override async Task OnInitializedAsync()
     {
+        
         // StreamRequest should be from JWT
-        //var channel = _greeterService.StreamAsync(new Server.Contracts.Streaming.StreamRequest
-        //{
-        //    Id = 1,
-        //    Name = "Bartal"
-        //});
-        //await foreach (var message in channel)
-        //{
-        //    if(message.StreamBody is SayHelloStreamBody sayHelloStreamBody)
-        //    {
-        //        _messages.Add("From Stream " + (sayHelloStreamBody?.Message ?? "EMPTY MESSAGE"));
-        //    } 
-        //    else
-        //    {
-        //        _messages.Add($"Stream received of type: {message?.StreamBody?.GetType()}");
-        //    }
-            
-        //    StateHasChanged();
-        //}
-
-
-        var channel = _greeterService.StreamAsync(new Server.Contracts.Streaming.StreamRequest
+        var channel = _greeterService.StreamAsync(new StreamRequest
         {
             Id = 1,
             Name = "Bartal"
         });
+
         await foreach (var message in channel)
         {
-            if (message is SayHelloStreamResponse sayHelloStreamBody)
+            if (message is SayHelloStreamResponse sayHelloStreamResponse)
             {
-                _messages.Add("From Stream " + (sayHelloStreamBody?.Message ?? "EMPTY MESSAGE"));
+                _messages.Add(("From Stream " + (sayHelloStreamResponse?.Message ?? "EMPTY MESSAGE")) + " Guid: " + Guid.ToString());
             }
             else
             {
-                _messages.Add($"Stream received of type: {message?.GetType()}");
+                _messages.Add($"Stream received of type: {message?.GetType()}" + " Guid: " + Guid.ToString());
             }
 
             StateHasChanged();
@@ -73,7 +59,7 @@ public partial class Index
                 Name = _message
             });
 
-            _messages.Add(messageResponse.Message ?? "EMPTY MESSAGE");
+            _messages.Add((messageResponse.Message ?? "EMPTY MESSAGE") + " Guid: " + Guid.ToString());
         }
         catch (RpcException ex)
         {
@@ -101,7 +87,7 @@ public partial class Index
             //    }
             //});
 
-            _messages.Add($"Success: {messageResponse?.Success}, Error: {messageResponse?.Error}");
+            _messages.Add($"Success: {messageResponse?.Success}, Error: {messageResponse?.Error}. " + Guid.ToString());
         }
         catch (RpcException ex)
         {
@@ -111,5 +97,12 @@ public partial class Index
         {
             _messages.Add("!!BAD!! " + ex.ToString());
         }
+    }
+
+    public async ValueTask Handle(SayHelloStreamResponse notification, CancellationToken cancellationToken)
+    {
+        var s = Guid.ToString();
+        _messages.Add("From SignalR Stream " + (notification?.Message ?? "EMPTY MESSAGE"));
+        await InvokeAsync(() => StateHasChanged());
     }
 }

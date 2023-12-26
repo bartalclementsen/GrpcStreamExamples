@@ -1,6 +1,7 @@
 using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using GrpcStreamExamples.Client;
+using GrpcStreamExamples.Client.Services;
 using GrpcStreamExamples.Server.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -12,6 +13,11 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+builder.Services.AddMediator(options =>
+{
+    options.ServiceLifetime = ServiceLifetime.Singleton;
+});
 
 // gRPC Channel
 builder.Services.AddSingleton(services =>
@@ -51,4 +57,12 @@ builder.Services.AddTransient<IGreeterService>(services =>
     return grpcChannel.CreateGrpcService<IGreeterService>();
 });
 
-await builder.Build().RunAsync();
+builder.Services.AddSingleton<IStreamingService, StreamingService>();
+
+var host = builder.Build();
+
+IStreamingService streamingService = host.Services.GetRequiredService<IStreamingService>();
+streamingService.Start();
+
+
+await host.RunAsync();
