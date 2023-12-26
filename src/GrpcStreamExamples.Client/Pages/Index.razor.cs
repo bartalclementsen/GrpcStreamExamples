@@ -1,13 +1,4 @@
-﻿using Grpc.Core;
-using GrpcStreamExamples.Client.Services;
-using GrpcStreamExamples.Server.Contracts;
-using GrpcStreamExamples.Server.Contracts.Commands;
-using GrpcStreamExamples.Server.Contracts.Streaming;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System.Collections.ObjectModel;
-
-namespace GrpcStreamExamples.Client.Pages;
+﻿namespace GrpcStreamExamples.Client.Pages;
 
 public partial class Index
 {
@@ -20,7 +11,6 @@ public partial class Index
     [Inject] private IEventAggregator _eventAggregator { get; set; } = default!;
 
     private ISubscription? subscription;
-    public Guid Guid = Guid.NewGuid();
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,9 +36,9 @@ public partial class Index
                 Name = _message
             });
 
-            _messages.Add((messageResponse.Message ?? "EMPTY MESSAGE") + " Guid: " + Guid.ToString());
+            _messages.Add(messageResponse.Message ?? "EMPTY MESSAGE");
         }
-        catch (RpcException ex)
+        catch (Exception ex)
         {
             _messages.Add(ex.ToString());
         }
@@ -66,15 +56,11 @@ public partial class Index
                 Name = _message
             });
 
-            _messages.Add($"Success: {messageResponse?.Success}, Error: {messageResponse?.Error}. " + Guid.ToString());
-        }
-        catch (RpcException ex)
-        {
-            _messages.Add(ex.ToString());
+            _messages.Add($"Success: {messageResponse?.Success}, Error: {messageResponse?.Error}");
         }
         catch (Exception ex)
         {
-            _messages.Add("!!BAD!! " + ex.ToString());
+            _messages.Add(ex.ToString());
         }
     }
 }
