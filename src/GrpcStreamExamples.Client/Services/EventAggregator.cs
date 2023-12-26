@@ -22,7 +22,7 @@ public class EventAggregator : IEventAggregator
 
     public ISubscription Subscribe<T>(Func<T, CancellationToken, Task> handler)
     {
-        Subscription<T> subscription = new(typeof(T), handler, this);
+        Subscription<T> subscription = new(handler, this);
         if (!_subscriptions.TryGetValue(typeof(T), out Dictionary<Guid, ISubscription>? subscriptions))
         {
             subscriptions = [];
@@ -39,7 +39,7 @@ public class EventAggregator : IEventAggregator
         {
             subscriptions.Remove(subscription.Id);
 
-            if (subscriptions.Any() == false)
+            if (subscriptions.Count == 0)
             {
                 _subscriptions.Remove(subscription.Type);
             }
@@ -59,11 +59,11 @@ public class EventAggregator : IEventAggregator
         }
     }
 
-    private class Subscription<T> : ISubscription
+    /* ----------------------------------------------------------------------------  */
+    /*                                 INNER CLASSES                                 */
+    /* ----------------------------------------------------------------------------  */
+    private record Subscription<T> : ISubscription
     {
-        /* ----------------------------------------------------------------------------  */
-        /*                                  PROPERTIES                                   */
-        /* ----------------------------------------------------------------------------  */
         private bool _disposed = false;
 
         public Guid Id { get; }
@@ -74,29 +74,20 @@ public class EventAggregator : IEventAggregator
 
         private readonly IEventAggregator _eventAggregator;
 
-        /* ----------------------------------------------------------------------------  */
-        /*                                 CONSTRUCTORS                                  */
-        /* ----------------------------------------------------------------------------  */
-        public Subscription(Type type, Func<T, CancellationToken, Task> handler, IEventAggregator streamingService)
+        public Subscription(Func<T, CancellationToken, Task> handler, IEventAggregator streamingService)
         {
             Id = Guid.NewGuid();
-            Type = type;
+            Type = typeof(T);
             Handler = handler;
             _eventAggregator = streamingService;
         }
 
-        /* ----------------------------------------------------------------------------  */
-        /*                                PUBLIC METHODS                                 */
-        /* ----------------------------------------------------------------------------  */
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /* ----------------------------------------------------------------------------  */
-        /*                               PROTECTED METHODS                               */
-        /* ----------------------------------------------------------------------------  */
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed)
@@ -112,4 +103,5 @@ public class EventAggregator : IEventAggregator
             _disposed = true;
         }
     }
+
 }
