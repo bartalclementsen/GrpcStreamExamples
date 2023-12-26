@@ -1,8 +1,8 @@
 ﻿namespace GrpcStreamExamples.Server.Contracts.Commands;
 
 [ProtoContract]
-public class SayHelloCommand : CommandRequest
+public record SayHelloCommand : CommandRequest
 {
     [ProtoMember(1)]
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 }

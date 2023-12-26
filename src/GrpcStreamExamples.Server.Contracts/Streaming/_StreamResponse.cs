@@ -3,4 +3,4 @@
 [ProtoContract]
 [ProtoInclude(1, typeof(EmptyStreamResponse))]
 [ProtoInclude(2, typeof(SayHelloStreamResponse))]
-public abstract class StreamResponse : INotification { }
+public abstract record StreamResponse : INotification { }

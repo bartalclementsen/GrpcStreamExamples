@@ -2,11 +2,11 @@
 
 // These should be taken from JWT instead of a Request message
 [ProtoContract]
-public class StreamRequest
+public record StreamRequest
 {
     [ProtoMember(1)]
-    public int Id { get; set; } = default!;
+    public int Id { get; init; } = default!;
 
     [ProtoMember(2)]
-    public string Name { get; set; } = default!;
+    public string Name { get; init; } = default!;
 }

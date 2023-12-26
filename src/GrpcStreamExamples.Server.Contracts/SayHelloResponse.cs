@@ -1,8 +1,8 @@
 ﻿namespace GrpcStreamExamples.Server.Contracts;
 
 [ProtoContract]
-public class SayHelloResponse
+public record SayHelloResponse
 {
     [ProtoMember(1)]
-    public string? Message { get; set; }
+    public string? Message { get; init; }
 }

@@ -1,12 +1,12 @@
 ﻿namespace GrpcStreamExamples.Server.Contracts.Commands;
 
 [ProtoContract]
-public class CommandResponse
+public record CommandResponse
 {
     [ProtoMember(1)]
-    public bool Success { get; set; }
+    public bool Success { get; init; }
 
     [ProtoMember(2)]
-    public string? Error { get; set; }
+    public string? Error { get; init; }
 }
 
