@@ -1,4 +1,5 @@
 ﻿using Grpc.Core;
+using GrpcStreamExamples.Client.Services;
 using GrpcStreamExamples.Server.Contracts;
 using GrpcStreamExamples.Server.Contracts.Commands;
 using GrpcStreamExamples.Server.Contracts.Streaming;
@@ -9,20 +10,28 @@ using System.Collections.ObjectModel;
 
 namespace GrpcStreamExamples.Client.Pages;
 
-public partial class Index //: INotificationHandler<SayHelloStreamResponse>
+public partial class Index
 {
     private string? _message;
 
     private ObservableCollection<string> _messages = new ObservableCollection<string>();
 
     [Inject] private IGreeterService _greeterService { get; set; } = default!;
-    [Inject] private IMediator _mediator { get; set; } = default!;
 
+    [Inject] private IEventAggregator _eventAggregator { get; set; } = default!;
+
+    private ISubscription? subscription;
     public Guid Guid = Guid.NewGuid();
 
     protected override async Task OnInitializedAsync()
     {
-        
+        subscription = _eventAggregator.Subscribe((SayHelloStreamResponse notification, CancellationToken ct) =>
+        {
+            _messages.Add("From SignalR Stream " + (notification?.Message ?? "EMPTY MESSAGE"));
+            StateHasChanged();
+            return Task.CompletedTask;
+        });
+
         // StreamRequest should be from JWT
         var channel = _greeterService.StreamAsync(new StreamRequest
         {
@@ -97,12 +106,5 @@ public partial class Index //: INotificationHandler<SayHelloStreamResponse>
         {
             _messages.Add("!!BAD!! " + ex.ToString());
         }
-    }
-
-    public async ValueTask Handle(SayHelloStreamResponse notification, CancellationToken cancellationToken)
-    {
-        var s = Guid.ToString();
-        _messages.Add("From SignalR Stream " + (notification?.Message ?? "EMPTY MESSAGE"));
-        await InvokeAsync(() => StateHasChanged());
     }
 }

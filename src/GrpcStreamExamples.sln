@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34407.89
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcStreamExamples.Client", "GrpcStreamExamples.Client\GrpcStreamExamples.Client.csproj", "{AEE986EE-C385-4793-8195-24DBE6BBC500}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcStreamExamples.Client", "GrpcStreamExamples.Client\GrpcStreamExamples.Client.csproj", "{AEE986EE-C385-4793-8195-24DBE6BBC500}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcStreamExamples.Server", "GrpcStreamExamples.Server\GrpcStreamExamples.Server.csproj", "{ADF561DD-3E80-4189-A80F-AF3A77BDA677}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcStreamExamples.Server", "GrpcStreamExamples.Server\GrpcStreamExamples.Server.csproj", "{ADF561DD-3E80-4189-A80F-AF3A77BDA677}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcStreamExamples.Server.Contracts", "GrpcStreamExamples.Server.Contracts\GrpcStreamExamples.Server.Contracts.csproj", "{4B04648B-AD06-4394-8EB0-605E35AD9847}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcStreamExamples.Server.Contracts", "GrpcStreamExamples.Server.Contracts\GrpcStreamExamples.Server.Contracts.csproj", "{4B04648B-AD06-4394-8EB0-605E35AD9847}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
