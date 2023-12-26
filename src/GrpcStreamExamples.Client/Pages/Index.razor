@@ -1,0 +1,23 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<div>
+    <span>
+        Message: <InputText @bind-Value="_message"></InputText>
+    </span>
+    
+    <button @onclick="OnSendButtonClicked">Send</button>
+    <button @onclick="OnSendAsCommandButtonClicked">Send as Command</button>
+</div>
+
+<div>
+    @foreach(var message in _messages)
+    {
+        <p>@message</p>
+    }
+</div>
+
+
